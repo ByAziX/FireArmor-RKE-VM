@@ -1,0 +1,110 @@
+# cloud-config FireArmor
+
+#cloud-config
+
+# Install dependencies
+package_update: true
+packages:
+  - curl
+
+# Install RKE2
+runcmd:
+  - curl -sfL https://get.rke2.io | sh
+
+# Create a RKE2 configuration file
+write_files:
+  - path: /etc/rke2/cluster.toml
+    content: |
+      # Add your RKE2 configuration here
+      # Enable Cilium as the network plugin
+      network:
+        plugin: cilium
+
+# Create the Kubernetes cluster
+- command: rke2 up --config /etc/rke2/cluster.toml
+
+
+
+
+
+
+
+
+
+
+
+
+
+#cloud-config
+users:
+  name: ubuntu
+  passwd: FarmorD3v
+  sudo: ['ALL=(ALL) NOPASSWD:ALL']
+  groups: sudo
+  shell: /bin/bash
+
+
+# Install Docker
+apt_update: true
+apt_upgrade: true
+packages:
+- docker.io
+- curl
+
+# Install RKE2
+runcmd:
+- curl -sfL https://get.rke2.io | sh
+
+# Create a RKE2 configuration file
+write_files:
+- path: /etc/rke2/rke2.toml
+  content: |
+    # Add your RKE2 configuration options here
+  rke2:
+      ssh_agent_auth: true
+      ignore_docker_version: true
+      cluster_name: mon-cluster
+     nodes:
+    - address: 192.168.1.2
+      user: root
+      role: [controlplane,worker]
+    - address: 192.168.1.3
+      user: root
+      role: [controlplane,worker]
+    - address: 192.168.1.4
+      user: root
+      role: [controlplane,worker]
+    - address: 192.168.1.5
+      user: root
+      role: [controlplane,worker]
+    - address: 192.168.1.6
+      user: root
+      role: [controlplane,worker]
+
+    # Add more nodes as needed
+
+    services:
+      kube-api:
+        service_cluster_ip_range: 10.44.0.0/16
+      kube-controller: 
+      cluster_cidr: 10.42.0.0/16
+      service_cluster_ip_range: 10.43.0.0/16
+      cluster_name: mon-cluster
+      etcd:
+        snapshot: true
+        creation: 6h
+        retention: 24h
+    kubelet:
+      cluster_dns_server: 10.43.0.10
+      cluster_domain: cluster.local      
+      kubeproxy: {}
+
+    # Enable Cilium as the network plugin
+    network:
+      plugin: cilium
+
+    # Add any additional Cilium configuration options here
+
+# Create the Kubernetes cluster
+runcmd:
+- rke2 up --config /etc/rke2/rke2.toml
