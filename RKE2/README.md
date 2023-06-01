@@ -57,14 +57,8 @@ This README provides a set of commands to set up a Kubernetes cluster using RKE2
     EOF
     ```
 
-6. Run the following command to activate the environment variables:
 
-
-    ``` 
-    source /etc/profile.d/rke2.sh 
-    ```
-
-7. Run the following command to check if the nodes are ready:
+6. Run the following command to check if the nodes are ready:
 
     ```
     kubectl get nodes -w
