@@ -125,16 +125,21 @@ This README provides a set of commands to set up a Kubernetes cluster using RKE2
     - cilium
     EOF
 
-## Set up environment
+## Add in the `~/.bashrc` : 
 
+    ```
+    cat << EOF >> ~/.bashrc
     export VIP=10.10.10.175
     export TAG=v0.3.8
     export INTERFACE=eth0
     export CONTAINER_RUNTIME_ENDPOINT=unix:///run/k3s/containerd/containerd.sock
     export CONTAINERD_ADDRESS=/run/k3s/containerd/containerd.sock
-    export PATH=/var/lib/rancher/rke2/bin:$PATH
+    export PATH=/var/lib/rancher/rke2/bin:\$PATH
     export KUBECONFIG=/etc/rancher/rke2/rke2.yaml
     alias k=kubectl
+    ln -fs /var/lib/rancher/rke2/bin/{kubectl,crictl,ctr} /usr/local/bin/
+    EOF
+    ```
 
 ### Run Master2 
 

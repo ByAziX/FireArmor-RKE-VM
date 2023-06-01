@@ -129,14 +129,18 @@ cni:
 - cilium
 EOF
 
-    export VIP=10.10.10.175
-    export TAG=v0.3.8
-    export INTERFACE=eth0
-    export CONTAINER_RUNTIME_ENDPOINT=unix:///run/k3s/containerd/containerd.sock
-    export CONTAINERD_ADDRESS=/run/k3s/containerd/containerd.sock
-    export PATH=/var/lib/rancher/rke2/bin:$PATH
-    export KUBECONFIG=/etc/rancher/rke2/rke2.yaml
-    alias k=kubectl
+    cat << EOF >> ~/.bashrc
+export VIP=10.10.10.175
+export TAG=v0.3.8
+export INTERFACE=eth0
+export CONTAINER_RUNTIME_ENDPOINT=unix:///run/k3s/containerd/containerd.sock
+export CONTAINERD_ADDRESS=/run/k3s/containerd/containerd.sock
+export PATH=/var/lib/rancher/rke2/bin:\$PATH
+export KUBECONFIG=/etc/rancher/rke2/rke2.yaml
+alias k=kubectl
+ln -fs /var/lib/rancher/rke2/bin/{kubectl,crictl,ctr} /usr/local/bin/
+EOF
+    source ~/.bashrc
 
     mkdir -p /etc/rancher/rke2
     cp master.yaml /etc/rancher/rke2/config.yaml
