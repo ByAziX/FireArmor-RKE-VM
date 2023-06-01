@@ -41,18 +41,20 @@ This README provides a set of commands to set up a Kubernetes cluster using RKE2
 4. Wait for RKE2 to be ready
 
 
-5. Create a file named `rke2.sh` in the `/etc/profile.d/` directory and copy the following content into it:
+5. Add in the `~/.bashrc` : 
 
     ```
+    cat << EOF >> ~/.bashrc
     export VIP=10.10.10.175
     export TAG=v0.3.8
     export INTERFACE=eth0
     export CONTAINER_RUNTIME_ENDPOINT=unix:///run/k3s/containerd/containerd.sock
     export CONTAINERD_ADDRESS=/run/k3s/containerd/containerd.sock
-    export PATH=/var/lib/rancher/rke2/bin:$PATH
+    export PATH=/var/lib/rancher/rke2/bin:\$PATH
     export KUBECONFIG=/etc/rancher/rke2/rke2.yaml
     alias k=kubectl
     ln -fs /var/lib/rancher/rke2/bin/{kubectl,crictl,ctr} /usr/local/bin/
+    EOF
     ```
 
 6. Run the following command to activate the environment variables:
